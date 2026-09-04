@@ -1,0 +1,11 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CheckoutForm from "../components/CheckoutForm.jsx";
+---
+
+<Layout title="Checkout — NULA">
+  <div class="mx-auto max-w-6xl px-6 py-12">
+    <h1 class="font-display text-4xl mb-8">Checkout</h1>
+    <CheckoutForm client:load />
+  </div>
+</Layout>

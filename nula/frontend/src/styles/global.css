@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  /* Paleta NULA: base utilitaria, cálida y neutra, con un solo acento oliva */
+  --color-paper: #edeae1;
+  --color-paper-dim: #e2ddd0;
+  --color-ink: #16140f;
+  --color-ink-soft: #43412f;
+  --color-concrete: #9b9689;
+  --color-olive: #565a3f;
+  --color-olive-light: #767c58;
+  --color-error: #8c2f1f;
+
+  --font-display: "Big Shoulders Display", sans-serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-concrete);
+  }
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+  }
+  ::selection {
+    background-color: var(--color-olive);
+    color: var(--color-paper);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-olive);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+  .tag-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
+    color: var(--color-ink-soft);
+  }
+}

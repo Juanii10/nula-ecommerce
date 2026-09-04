@@ -1,0 +1,11 @@
+---
+import Layout from "../layouts/Layout.astro";
+import AuthForm from "../components/AuthForm.jsx";
+---
+
+<Layout title="Crear cuenta — NULA">
+  <div class="mx-auto max-w-6xl px-6 py-12">
+    <h1 class="font-display text-4xl mb-8">Crear cuenta</h1>
+    <AuthForm client:load mode="register" />
+  </div>
+</Layout>

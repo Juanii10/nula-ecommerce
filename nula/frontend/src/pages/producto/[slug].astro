@@ -1,0 +1,28 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ProductView from "../../components/ProductView.jsx";
+import { api } from "../../lib/api.js";
+
+const { slug } = Astro.params;
+
+let product = null;
+try {
+  product = await api.getProduct(slug);
+} catch {
+  product = null;
+}
+
+if (!product) {
+  return Astro.redirect("/catalogo");
+}
+---
+
+<Layout title={`${product.name} — NULA`} description={product.description}>
+  <div class="mx-auto max-w-6xl px-6 py-12">
+    <a href="/catalogo" class="tag-label hover:text-olive transition-colors">← VOLVER AL CATÁLOGO</a>
+
+    <div class="mt-6">
+      <ProductView client:load product={product} />
+    </div>
+  </div>
+</Layout>

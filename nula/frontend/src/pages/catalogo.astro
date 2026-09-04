@@ -1,0 +1,111 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { api } from "../lib/api.js";
+import { formatPrice } from "../lib/format.js";
+
+const category = Astro.url.searchParams.get("category") || "";
+const sort = Astro.url.searchParams.get("sort") || "";
+const q = Astro.url.searchParams.get("q") || "";
+
+let products = [];
+let categories = [];
+try {
+  [products, categories] = await Promise.all([
+    api.getProducts({ ...(category && { category }), ...(sort && { sort }), ...(q && { q }) }),
+    api.getCategories(),
+  ]);
+} catch {
+  products = [];
+  categories = [];
+}
+
+function buildUrl(overrides) {
+  const params = new URLSearchParams();
+  const next = { category, sort, q, ...overrides };
+  if (next.category) params.set("category", next.category);
+  if (next.sort) params.set("sort", next.sort);
+  if (next.q) params.set("q", next.q);
+  const qs = params.toString();
+  return `/catalogo${qs ? `?${qs}` : ""}`;
+}
+---
+
+<Layout title="Catálogo — NULA">
+  <div class="mx-auto max-w-6xl px-6 py-12">
+    <h1 class="font-display text-4xl mb-8">Catálogo</h1>
+
+    <div class="flex flex-wrap items-center gap-3 mb-10 font-mono text-sm">
+      <a
+        href={buildUrl({ category: "" })}
+        class={`border px-3 py-1.5 transition-colors ${!category ? "bg-ink text-paper border-ink" : "border-concrete/50 hover:border-ink"}`}
+      >
+        TODO
+      </a>
+      {categories.map((c) => (
+        <a
+          href={buildUrl({ category: c.slug })}
+          class={`border px-3 py-1.5 transition-colors ${category === c.slug ? "bg-ink text-paper border-ink" : "border-concrete/50 hover:border-ink"}`}
+        >
+          {c.name.toUpperCase()}
+        </a>
+      ))}
+
+      <div class="ml-auto flex items-center gap-2">
+        <label for="sort" class="tag-label">ORDENAR</label>
+        <select
+          id="sort"
+          data-category={category}
+          data-q={q}
+          class="border border-concrete/50 bg-paper px-2 py-1.5 font-mono text-sm"
+        >
+          <option value="" selected={!sort}>Relevancia</option>
+          <option value="price_asc" selected={sort === "price_asc"}>Precio: menor a mayor</option>
+          <option value="price_desc" selected={sort === "price_desc"}>Precio: mayor a menor</option>
+        </select>
+      </div>
+    </div>
+
+    {products.length === 0 ? (
+      <p class="text-ink-soft">No hay productos que coincidan con este filtro.</p>
+    ) : (
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-10">
+        {products.map((p) => (
+          <a href={`/producto/${p.slug}`} class="group block">
+            <div class="aspect-[4/5] bg-paper-dim border border-concrete/40 overflow-hidden">
+              {p.images?.[0] ? (
+                <img
+                  src={p.images[0]}
+                  alt={p.name}
+                  class="h-full w-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                  loading="lazy"
+                />
+              ) : (
+                <div class="h-full w-full flex items-center justify-center">
+                  <span class="tag-label text-concrete">{p.category.name}</span>
+                </div>
+              )}
+            </div>
+            <div class="mt-3 flex items-baseline justify-between">
+              <h3 class="text-sm group-hover:text-olive transition-colors">{p.name}</h3>
+              <span class="font-mono text-sm">{formatPrice(p.price)}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
+  </div>
+
+  <script>
+    const select = document.getElementById("sort");
+    select?.addEventListener("change", () => {
+      const params = new URLSearchParams();
+      const category = select.dataset.category;
+      const q = select.dataset.q;
+      if (category) params.set("category", category);
+      if (q) params.set("q", q);
+      if (select.value) params.set("sort", select.value);
+      const qs = params.toString();
+      window.location.href = `/catalogo${qs ? `?${qs}` : ""}`;
+    });
+  </script>
+</Layout>

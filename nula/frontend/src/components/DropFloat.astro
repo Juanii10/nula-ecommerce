@@ -1,0 +1,154 @@
+---
+import { formatPrice } from "../lib/format.js";
+
+interface Garment {
+  slug: string;
+  name: string;
+  price: number;
+  images?: string[];
+  category?: { name?: string };
+}
+
+interface Props {
+  garments: Garment[];
+}
+
+const { garments } = Astro.props;
+
+// Fotos curadas por prenda para el drop (distintas de las del slider de arriba).
+const IMAGE_OVERRIDES: Record<string, string> = {
+  "remera-oversize-base": "/products/remera-oversize-base/negro-1.jpg",
+  "buzo-half-zip": "/products/buzo-half-zip/negro-3.jpg",
+  "campera-jean": "/products/campera-jean/negro-4.jpg",
+  "pantalon-cargo-wide": "/products/pantalon-cargo-wide/cargo-3.jpg",
+};
+
+// Posición, rotación y desfase de cada prenda "flotando" (hasta 4 piezas).
+const LAYOUT = [
+  { top: "0%", left: "2%", rotate: -7, delay: 0, z: 10 },
+  { top: "4%", left: "56%", rotate: 6, delay: 120, z: 20 },
+  { top: "46%", left: "22%", rotate: 5, delay: 240, z: 15 },
+  { top: "40%", left: "66%", rotate: -5, delay: 360, z: 25 },
+];
+
+const pieces = garments.slice(0, 4).map((g, i) => ({
+  ...g,
+  image: IMAGE_OVERRIDES[g.slug] ?? g.images?.[0],
+  layout: LAYOUT[i],
+}));
+---
+
+<section id="nuevo-drop" class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+  <div class="flex items-baseline justify-between mb-8 sm:mb-4">
+    <div>
+      <p class="tag-label mb-3">DROP 01</p>
+      <h2 class="font-display text-3xl sm:text-4xl">Recién salido.</h2>
+    </div>
+    <a href="/catalogo" class="tag-label hover:text-olive transition-colors">VER CATÁLOGO →</a>
+  </div>
+
+  {
+    pieces.length === 0 ? (
+      <p class="text-ink-soft mt-8">
+        No se pudo cargar el drop. Revisá que la API esté corriendo en
+        <code class="font-mono"> PUBLIC_API_URL</code>.
+      </p>
+    ) : (
+      <div data-float-section class="relative sm:min-h-[760px] lg:min-h-[820px] pt-6 sm:pt-0">
+        {pieces.map((p) => (
+          <a
+            href={`/producto/${p.slug}`}
+            class="drop-float-item group block w-44 sm:w-56 md:w-64 mx-auto sm:mx-0 mb-12 sm:mb-0 sm:absolute"
+            style={`top:${p.layout.top}; left:${p.layout.left}; z-index:${p.layout.z}; --rotate:${p.layout.rotate}deg; --delay:${p.layout.delay}ms;`}
+          >
+            <div class="border border-concrete/40 bg-paper-dim p-2 shadow-[0_18px_40px_-12px_rgba(22,20,15,0.35)]">
+              <div class="aspect-[4/5] overflow-hidden bg-paper">
+                {p.image ? (
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    class="h-full w-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div class="h-full w-full flex items-center justify-center">
+                    <span class="tag-label text-concrete">{p.category?.name}</span>
+                  </div>
+                )}
+              </div>
+              <div class="mt-2 flex items-baseline justify-between px-1 pb-1">
+                <span class="text-xs">{p.name}</span>
+                <span class="font-mono text-xs">{formatPrice(p.price)}</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .drop-float-item {
+    opacity: 0;
+    transform: translateY(4rem) rotate(var(--rotate, 0deg));
+    transition:
+      transform 700ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 700ms ease-out;
+    transition-delay: var(--delay, 0ms);
+  }
+
+  .drop-float-item.is-visible {
+    opacity: 1;
+    transform: translateY(0) rotate(var(--rotate, 0deg));
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .drop-float-item.is-floating {
+      animation: drop-float 5s ease-in-out infinite;
+      animation-delay: var(--delay, 0ms);
+    }
+  }
+
+  @keyframes drop-float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(var(--rotate, 0deg));
+    }
+    50% {
+      transform: translateY(-10px) rotate(var(--rotate, 0deg));
+    }
+  }
+</style>
+
+<script>
+  function initFloat(section: Element) {
+    const items = Array.from(section.querySelectorAll<HTMLElement>(".drop-float-item"));
+    if (items.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          items.forEach((item) => {
+            item.classList.add("is-visible");
+            item.addEventListener(
+              "transitionend",
+              function onEnd(e) {
+                if (e.propertyName !== "transform") return;
+                item.classList.add("is-floating");
+                item.removeEventListener("transitionend", onEnd);
+              }
+            );
+          });
+          observer.disconnect();
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(section);
+  }
+
+  document.querySelectorAll("[data-float-section]").forEach(initFloat);
+</script>

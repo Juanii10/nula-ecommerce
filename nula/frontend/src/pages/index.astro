@@ -1,7 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import DropHero from "../components/DropHero.astro";
+import DropFloat from "../components/DropFloat.astro";
+import ComboMarquee from "../components/ComboMarquee.astro";
 import { api } from "../lib/api.js";
-import { formatPrice } from "../lib/format.js";
 
 let featured = [];
 try {
@@ -12,61 +14,9 @@ try {
 ---
 
 <Layout>
-  <section class="border-b border-concrete/40">
-    <div class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
-      <p class="tag-label mb-4">COLECCIÓN PERMANENTE</p>
-      <h1 class="font-display text-6xl sm:text-8xl leading-[0.9] tracking-tight max-w-3xl">
-        Básicos que no pasan de moda.
-      </h1>
-      <p class="mt-6 max-w-md text-ink-soft">
-        Remeras, buzos y pantalones confeccionados en Buenos Aires con telas pesadas
-        y cortes pensados para durar más de una temporada.
-      </p>
-      <a
-        href="/catalogo"
-        class="mt-8 inline-flex items-center border border-ink px-6 py-3 font-mono text-sm hover:bg-ink hover:text-paper transition-colors"
-      >
-        VER CATÁLOGO
-      </a>
-    </div>
-  </section>
+  <DropHero />
 
-  <section class="mx-auto max-w-6xl px-6 py-16">
-    <div class="flex items-baseline justify-between mb-8">
-      <h2 class="font-display text-3xl">Destacados</h2>
-      <a href="/catalogo" class="tag-label hover:text-olive transition-colors">VER TODO →</a>
-    </div>
+  <DropFloat garments={featured} />
 
-    {featured.length === 0 ? (
-      <p class="text-ink-soft">
-        No se pudo cargar el catálogo. Revisá que la API esté corriendo en
-        <code class="font-mono"> PUBLIC_API_URL</code>.
-      </p>
-    ) : (
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-10">
-        {featured.map((p) => (
-          <a href={`/producto/${p.slug}`} class="group block">
-            <div class="aspect-[4/5] bg-paper-dim border border-concrete/40 overflow-hidden">
-              {p.images?.[0] ? (
-                <img
-                  src={p.images[0]}
-                  alt={p.name}
-                  class="h-full w-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                  loading="lazy"
-                />
-              ) : (
-                <div class="h-full w-full flex items-center justify-center">
-                  <span class="tag-label text-concrete">{p.category.name}</span>
-                </div>
-              )}
-            </div>
-            <div class="mt-3 flex items-baseline justify-between">
-              <h3 class="text-sm group-hover:text-olive transition-colors">{p.name}</h3>
-              <span class="font-mono text-sm">{formatPrice(p.price)}</span>
-            </div>
-          </a>
-        ))}
-      </div>
-    )}
-  </section>
+  <ComboMarquee />
 </Layout>

@@ -1,0 +1,119 @@
+---
+import { formatPrice } from "../lib/format.js";
+
+// Piezas del catálogo permanente para responder "¿con qué lo combino?".
+const items = [
+  {
+    slug: "remera-estampa-frontal",
+    name: "Remera Estampa Frontal",
+    price: 2100000,
+    image: "/products/remera-estampa-frontal/negro-3.jpg",
+  },
+  {
+    slug: "buzo-canguro-piezas",
+    name: "Buzo Canguro Piezas",
+    price: 4200000,
+    image: "/products/buzo-canguro-piezas/negro-1.jpg",
+  },
+  {
+    slug: "gorra-estructurada",
+    name: "Gorra Estructurada",
+    price: 1500000,
+    image: "/products/gorra-estructurada/gorra-1.jpg",
+  },
+  {
+    slug: "bolso-tote-lona",
+    name: "Bolso Tote Lona",
+    price: 1200000,
+    image: "/products/bolso-tote-lona/negro-1.jpg",
+  },
+  {
+    slug: "pantalon-jogger-tapered",
+    name: "Pantalón Jogger Tapered",
+    price: 3400000,
+    image: "/products/pantalon-jogger-tapered/negro-3.jpg",
+  },
+];
+
+// Se repite la tira varias veces para que el loop nunca se quede sin fotos
+// que mostrar, incluso en monitores muy anchos.
+const REPEATS = 4;
+const track = Array.from({ length: REPEATS }).flatMap((_, rep) =>
+  items.map((it) => ({ ...it, isPrimary: rep === 0 }))
+);
+---
+
+<section class="border-t border-concrete/40">
+  <div class="mx-auto max-w-6xl px-6 pt-20 sm:pt-28 pb-10 sm:pb-14">
+    <p class="tag-label mb-4">EXPLORÁ MÁS</p>
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+      <h2 class="font-display text-4xl sm:text-6xl leading-[0.95] max-w-xl">
+        ¿Con qué puedo combinarlo?
+      </h2>
+      <a
+        href="/catalogo"
+        class="shrink-0 inline-flex items-center border border-ink px-6 py-3 font-mono text-sm hover:bg-ink hover:text-paper transition-colors"
+      >
+        VER CATÁLOGO COMPLETO
+      </a>
+    </div>
+  </div>
+
+  <div
+    data-marquee
+    class="relative border-y border-concrete/40 bg-ink overflow-x-auto sm:overflow-hidden snap-x snap-mandatory sm:snap-none"
+  >
+    <div class="marquee-track flex w-max">
+      {
+        track.map((it) => (
+          <a
+            href={`/producto/${it.slug}`}
+            aria-hidden={it.isPrimary ? undefined : "true"}
+            tabindex={it.isPrimary ? undefined : -1}
+            class:list={[
+              "group relative h-64 sm:h-80 md:h-96 w-40 sm:w-52 md:w-60 shrink-0 overflow-hidden",
+              it.isPrimary ? "block snap-start" : "hidden sm:block",
+            ]}
+          >
+            <img
+              src={it.image}
+              alt={it.isPrimary ? it.name : ""}
+              class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+            />
+            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent px-3 pb-3 pt-10">
+              <p class="text-paper text-xs">{it.name}</p>
+              <p class="font-mono text-paper/75 text-xs">{formatPrice(it.price)}</p>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  @media (min-width: 640px) {
+    .marquee-track {
+      animation: marquee-scroll 26s linear infinite;
+    }
+    [data-marquee]:hover .marquee-track {
+      animation-play-state: paused;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none !important;
+    }
+  }
+
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-25%);
+    }
+  }
+</style>

@@ -119,13 +119,12 @@ const PRODUCTS = [
     colors: ["Negro", "Celeste"],
     featured: true,
     images: [
-      "/products/pantalon-cargo-wide/cargo-3.jpg",
       "/products/pantalon-cargo-wide/cargo-2.jpg",
       "/products/pantalon-cargo-wide/cargo-1.jpg",
+      "/products/pantalon-cargo-wide/cargo-3.jpg",
       "/products/pantalon-cargo-wide/cargo-celeste-3.jpg",
       "/products/pantalon-cargo-wide/cargo-celeste-1.jpg",
       "/products/pantalon-cargo-wide/cargo-celeste-2.jpg",
-
     ],
   },
   {
@@ -136,7 +135,12 @@ const PRODUCTS = [
     category: "pantalones",
     colors: ["Negro", "Gris"],
     featured: false,
-    images: ["/products/jogger-1.jpg"],
+    // "<color>-1" = frente flat, "-2" = espalda flat, "-3" = foto en modelo
+    images: [
+      "/products/pantalon-jogger-tapered/negro-1.jpg",
+      "/products/pantalon-jogger-tapered/negro-2.jpg",
+      "/products/pantalon-jogger-tapered/negro-3.jpg",
+    ],
   },
   {
     name: "Gorra Estructurada",

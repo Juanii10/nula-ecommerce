@@ -1,24 +1,29 @@
 ---
 // Banner de hype para el drop nuevo: una sola imagen a pantalla completa.
+// En mobile el texto va DEBAJO de la foto (no hay alto suficiente para superponerlo
+// sin que se corte la imagen o se superponga mal). En desktop, el texto se
+// superpone sobre la foto como antes.
 const image = "/products/drop/drop-1.jpg";
 const alt = "Campaña del Drop 01 con las 4 piezas nuevas";
 ---
 
-<section class="relative w-full aspect-[1600/900] overflow-hidden bg-ink">
-  <img src={image} alt={alt} class="absolute inset-0 h-full w-full object-contain" />
-  <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/15 to-transparent" />
+<section class="relative w-full bg-ink">
+  <div class="relative w-full aspect-[1600/900] overflow-hidden">
+    <img src={image} alt={alt} class="absolute inset-0 h-full w-full object-cover" />
+    <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
+  </div>
 
-  <div class="relative z-10 h-full flex flex-col justify-end mx-auto max-w-6xl px-6 pb-16 sm:pb-20 text-paper">
+  <div class="relative sm:absolute sm:inset-0 z-10 flex flex-col justify-end mx-auto max-w-6xl px-6 py-8 sm:py-0 sm:pb-20 text-paper">
     <p class="font-mono text-[0.7rem] tracking-[0.02em] text-paper/80 mb-3">DROP 01 · EDICIÓN LIMITADA</p>
-    <h1 class="font-display text-5xl sm:text-7xl leading-[0.9] max-w-2xl">
+    <h1 class="font-display text-4xl sm:text-7xl leading-[0.95] sm:leading-[0.9] max-w-2xl">
       Salió lo nuevo.
     </h1>
-    <p class="mt-4 max-w-md text-paper/80">
+    <p class="mt-3 sm:mt-4 max-w-md text-paper/80 text-sm sm:text-base">
       4 piezas, cantidad limitada. Cuando se agota, no vuelve.
     </p>
     <a
       href="#nuevo-drop"
-      class="mt-6 inline-flex w-fit items-center border border-paper px-6 py-3 font-mono text-sm hover:bg-paper hover:text-ink transition-colors"
+      class="mt-5 sm:mt-6 inline-flex w-fit items-center border border-paper px-6 py-3 font-mono text-sm hover:bg-paper hover:text-ink transition-colors"
     >
       VER LAS 4 PIEZAS ↓
     </a>

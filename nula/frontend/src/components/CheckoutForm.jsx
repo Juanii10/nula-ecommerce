@@ -142,8 +142,7 @@ export default function CheckoutForm() {
         <div className="border border-concrete/40 p-4">
           <p className="tag-label mb-1">PAGO</p>
           <p className="text-sm text-ink-soft">
-            Simulado para este proyecto — no se procesa ningún cobro real. En producción
-            acá se integraría Stripe o Mercado Pago.
+            Simulado para este proyecto — no se procesa ningún cobro real.
           </p>
         </div>
 

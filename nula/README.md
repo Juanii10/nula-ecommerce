@@ -49,7 +49,7 @@ npm run dev   # http://localhost:4321
 - Historial de pedidos por usuario y vista de todos los pedidos para admin
 
 **Frontend**
-- Astro en modo SSR (los datos vienen en vivo de la API, no son estáticos)
+- Astro
 - Carrito persistente en el navegador (nanostores + localStorage)
 - Selector de talle/color con validación de stock antes de agregar al carrito
 - Checkout con formulario de envío y confirmación de pedido
@@ -64,12 +64,10 @@ todavía sumaría:
 
 - **Pago real**: hoy el checkout simula el pago y marca el pedido como
   `paid` directo. El punto de integración está marcado en
-  `backend/src/controllers/orders.controller.js` — ahí conectarías Stripe
-  o Mercado Pago (checkout + webhook de confirmación).
+  `backend/src/controllers/orders.controller.js`
 - **Imágenes de producto reales**: el seed usa rutas de ejemplo
   (`/products/*.jpg`) que no existen; el front muestra un placeholder con
-  el nombre de la categoría en su lugar. Subí fotos reales a
-  `frontend/public/products/` y ajustá el seed o el panel admin.
+  el nombre de la categoría en su lugar.
 - **Base de datos para producción**: SQLite es perfecto para desarrollar;
   para deployar cambiá el `DATABASE_URL` a Postgres (Prisma lo soporta sin
   tocar el schema, solo el `provider`).
@@ -81,5 +79,4 @@ todavía sumaría:
 - Los precios se guardan en centavos (enteros) para evitar errores de
   punto flotante con dinero.
 - El carrito vive enteramente en el navegador; recién se valida contra
-  stock real en el momento del checkout (así evitamos tener que loguear
-  usuarios solo para armar el carrito).
+  stock real en el momento del checkout.

@@ -8,7 +8,7 @@ cliente: una marca de ropa urbana.
 
 ```
 nula/
-  backend/   → API REST (Node.js + Express + Prisma + SQLite)
+  backend/   → API REST (Node.js + Express + Prisma + PostgreSQL (Neon))
   frontend/  → Sitio (Astro SSR + React + Tailwind v4)
 ```
 
